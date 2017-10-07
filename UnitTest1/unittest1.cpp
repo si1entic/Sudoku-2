@@ -90,6 +90,7 @@ namespace UnitTest1
         {
             // TODO: 在此输入测试代码
             Core c;
+            PuzzleSovlver ps;
             const int number = 100, lower = 40, upper = 55;
             int(*result)[81] = new int[number][81];
             c.generate(number, lower, upper, true, result);
@@ -102,7 +103,7 @@ namespace UnitTest1
                 for (int j = 0; j < 81; j++)
                     Assert::IsTrue(checkValid(game, j / 9, j % 9, blanks), L"合法性出错");
                 Assert::IsTrue(blanks >= lower && blanks <= upper, L"挖空范围出错");
-                Assert::IsTrue(c.checkUnique(game), L"唯一性出错");
+                Assert::IsTrue(ps.checkUnique(game), L"唯一性出错");
             }
             delete[] result;
         }

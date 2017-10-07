@@ -24,4 +24,5 @@ void Output::output(int number, int result[][81])
     }
     fwrite(str, 1, index, fp);
     fclose(fp);
+    cout << "已输出至sudoku.txt文件" << endl;
 }
