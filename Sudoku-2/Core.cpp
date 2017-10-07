@@ -1,15 +1,15 @@
 #include "Core.h"
 
-const int maxrow = 9 * 9 * 9;
-const int maxcol = 1 + 9 * 9 * 4;
-const int num = maxcol + maxrow * 4;	// 总元素个数,  
+const int MAXROW = 9 * 9 * 9;
+const int MAXCOL = 1 + 9 * 9 * 4;
+const int NUM = MAXCOL + MAXROW * 4;	// 总元素个数,  
                                         // 第一个为Head元素,接着9*9*4个为列标元素,最后9*9*9*4个为“1”元素
-int Left[num], Right[num], Up[num], Down[num];    // 每个元素的4个方向分量（相当于链表中的箭头）
-int Col[num];        // 记录每个元素的列标元素
-int Row[num];        // 记录每个元素所在的01矩阵行数
-int Size[maxcol];    // 记录每列的“1”元素个数
-int Head[maxrow];    // 记录每行第一个“1”元素
-int no;				// 元素编号
+int g_left[NUM], g_right[NUM], g_up[NUM], g_down[NUM];    // 每个元素的4个方向分量（相当于链表中的箭头）
+int g_col[NUM];        // 记录每个元素的列标元素
+int g_row[NUM];        // 记录每个元素所在的01矩阵行数
+int g_size[MAXCOL];    // 记录每列的“1”元素个数
+int g_head[MAXROW];    // 记录每行第一个“1”元素
+int g_no;				// 元素编号
 
 /* 生成number个难度为mode的题目，放入result中 */
 void Core::generate(int number, int mode, int result[][81])
@@ -71,9 +71,9 @@ bool Core::solve(int puzzle[81], int solution[81])
             {
                 int row = i * 81 + j * 9 + k - 1;
                 select++;
-                remove(Col[Head[row]]);     // 移除该行首元素及其相关元素
-                for (int u = Right[Head[row]]; u != Head[row]; u = Right[u])
-                    remove(Col[u]);         // 移除该行其他元素及其相关元素
+                remove(g_col[g_head[row]]);     // 移除该行首元素及其相关元素
+                for (int u = g_right[g_head[row]]; u != g_head[row]; u = g_right[u])
+                    remove(g_col[u]);         // 移除该行其他元素及其相关元素
             }
         }
     }
@@ -208,9 +208,9 @@ bool Core::checkUnique(int final[9][9])
             {    
                 int row = i * 81 + j * 9 + k - 1;
                 select++;
-                remove(Col[Head[row]]);     // 移除该行首元素及其相关元素
-                for (int u = Right[Head[row]]; u != Head[row]; u = Right[u])
-                    remove( Col[u]);         // 移除该行其他元素及其相关元素
+                remove(g_col[g_head[row]]);     // 移除该行首元素及其相关元素
+                for (int u = g_right[g_head[row]]; u != g_head[row]; u = g_right[u])
+                    remove( g_col[u]);         // 移除该行其他元素及其相关元素
             }
         }
     }
@@ -222,33 +222,33 @@ bool Core::checkUnique(int final[9][9])
 
 void Core::init()
 {
-    memset(Left, 0, sizeof(Left));
-    memset(Right, 0, sizeof(Right));
-    memset(Up, 0, sizeof(Up));
-    memset(Down, 0, sizeof(Down));
-    memset(Col, 0, sizeof(Col));
-    memset(Row, 0, sizeof(Row));
-    memset(Size, 0, sizeof(Size));
-    memset(Head, 0, sizeof(Head));
+    memset(g_left, 0, sizeof(g_left));
+    memset(g_right, 0, sizeof(g_right));
+    memset(g_up, 0, sizeof(g_up));
+    memset(g_down, 0, sizeof(g_down));
+    memset(g_col, 0, sizeof(g_col));
+    memset(g_row, 0, sizeof(g_row));
+    memset(g_size, 0, sizeof(g_size));
+    memset(g_head, 0, sizeof(g_head));
 }
 
 void Core::link(int final[9][9])
 {
     /* 链接列标元素 */
-    for (int i = 0; i < maxcol; i++) 
+    for (int i = 0; i < MAXCOL; i++) 
     {
-        Left[i] = i - 1;
-        Right[i] = i + 1;
-        Up[i] = Down[i] = i;
-        Row[i] = 0;
-        Col[i] = i;
-        Size[i] = 0;
+        g_left[i] = i - 1;
+        g_right[i] = i + 1;
+        g_up[i] = g_down[i] = i;
+        g_row[i] = 0;
+        g_col[i] = i;
+        g_size[i] = 0;
     }
     /* 链接Head元素 */
-    Left[0] = maxcol - 1;
-    Right[maxcol - 1] = 0;
+    g_left[0] = MAXCOL - 1;
+    g_right[MAXCOL - 1] = 0;
     /* 链接“1”元素 */
-    no = maxcol;
+    g_no = MAXCOL;
     for (int i = 0; i < 9; i++) 
     {
         for (int j = 0; j < 9; j++) // 遍历9x9数独
@@ -258,19 +258,19 @@ void Core::link(int final[9][9])
             {
                 for (int t = 1; t <= 4; t++)  // 每个非0数字会在01矩阵中产生4个“1”元素
                 {   
-                    Left[no + t] = no + t - 1;
-                    Right[no + t] = no + t + 1;
-                    Row[no + t] = i * 81 + j * 9 + k - 1;
+                    g_left[g_no + t] = g_no + t - 1;
+                    g_right[g_no + t] = g_no + t + 1;
+                    g_row[g_no + t] = i * 81 + j * 9 + k - 1;
                 }
-                Left[no + 1] = no + 4;
-                Right[no + 4] = no + 1;
-                Head[Row[no + 1]] = no + 1;
+                g_left[g_no + 1] = g_no + 4;
+                g_right[g_no + 4] = g_no + 1;
+                g_head[g_row[g_no + 1]] = g_no + 1;
                 /* 将4个元素插入列链中 */
-                insertNode(i * 9 + j + 1, no + 1);
-                insertNode(81 + i * 9 + k, no + 2);
-                insertNode(81 * 2 + j * 9 + k, no + 3);
-                insertNode(81 * 3 + (i / 3 * 3 + j / 3) * 9 + k, no + 4);
-                no += 4;
+                insertNode(i * 9 + j + 1, g_no + 1);
+                insertNode(81 + i * 9 + k, g_no + 2);
+                insertNode(81 * 2 + j * 9 + k, g_no + 3);
+                insertNode(81 * 3 + (i / 3 * 3 + j / 3) * 9 + k, g_no + 4);
+                g_no += 4;
             }
             else  // 该位置为0，即待填
             {   
@@ -278,18 +278,18 @@ void Core::link(int final[9][9])
                 {   
                     for (int t = 1; t <= 4; t++)    // 生成并链接它们的元素
                     {   
-                        Left[no + t] = no + t - 1;
-                        Right[no + t] = no + t + 1;
-                        Row[no + t] = i * 81 + j * 9 + k - 1;
+                        g_left[g_no + t] = g_no + t - 1;
+                        g_right[g_no + t] = g_no + t + 1;
+                        g_row[g_no + t] = i * 81 + j * 9 + k - 1;
                     }
-                    Left[no + 1] = no + 4;
-                    Right[no + 4] = no + 1;
-                    Head[Row[no + 1]] = no + 1;
-                    insertNode(i * 9 + j + 1, no + 1);
-                    insertNode(81 + i * 9 + k, no + 2);
-                    insertNode(81 * 2 + j * 9 + k, no + 3);
-                    insertNode(81 * 3 + (i / 3 * 3 + j / 3) * 9 + k, no + 4);
-                    no += 4;
+                    g_left[g_no + 1] = g_no + 4;
+                    g_right[g_no + 4] = g_no + 1;
+                    g_head[g_row[g_no + 1]] = g_no + 1;
+                    insertNode(i * 9 + j + 1, g_no + 1);
+                    insertNode(81 + i * 9 + k, g_no + 2);
+                    insertNode(81 * 2 + j * 9 + k, g_no + 3);
+                    insertNode(81 * 3 + (i / 3 * 3 + j / 3) * 9 + k, g_no + 4);
+                    g_no += 4;
                 }
             }
         }
@@ -299,27 +299,27 @@ void Core::link(int final[9][9])
 void Core::insertNode(int col, int no)     /* 将no号元素添加到col列里 */
 {
     /* 在元素col和Down[col]之间插入no */
-    Up[Down[col]] = no;
-    Down[no] = Down[col];
-    Up[no] = col;
-    Down[col] = no;
-    Size[col]++;
-    Col[no] = col;
+    g_up[g_down[col]] = no;
+    g_down[no] = g_down[col];
+    g_up[no] = col;
+    g_down[col] = no;
+    g_size[col]++;
+    g_col[no] = col;
 } 
 
 void Core::remove(int col)
 {
     /* 移除col列标元素 */
-    Left[Right[col]] = Left[col];
-    Right[Left[col]] = Right[col];
+    g_left[g_right[col]] = g_left[col];
+    g_right[g_left[col]] = g_right[col];
     /* 移除col列“1”元素与其同行元素 */
-    for (int i = Down[col]; i != col; i = Down[i])   // 向下删
+    for (int i = g_down[col]; i != col; i = g_down[i])   // 向下删
     {    
-        for (int j = Right[i]; j != i; j = Right[j]) // 向右删
+        for (int j = g_right[i]; j != i; j = g_right[j]) // 向右删
         {   
-            Up[Down[j]] = Up[j];
-            Down[Up[j]] = Down[j];
-            Size[Col[j]]--;
+            g_up[g_down[j]] = g_up[j];
+            g_down[g_up[j]] = g_down[j];
+            g_size[g_col[j]]--;
         }
     }
 }
@@ -327,14 +327,14 @@ void Core::remove(int col)
 void Core::restore(int col)
 {
     /* 恢复col列标元素 */
-    Left[Right[col]] = Right[Left[col]] = col;
+    g_left[g_right[col]] = g_right[g_left[col]] = col;
     /* 恢复col列“1”元素与其同行元素 */
-    for (int i = Up[col]; i != col; i = Up[i])   // 恢复顺序与移除顺序相反
+    for (int i = g_up[col]; i != col; i = g_up[i])   // 恢复顺序与移除顺序相反
     {      
-        for (int j = Left[i]; j != i; j = Left[j]) 
+        for (int j = g_left[i]; j != i; j = g_left[j]) 
         {
-            Up[Down[j]] = Down[Up[j]] = j;
-            Size[Col[j]]++;
+            g_up[g_down[j]] = g_down[g_up[j]] = j;
+            g_size[g_col[j]]++;
         }
     }
 }
@@ -346,9 +346,9 @@ bool Core::findOneSolution(int final[9][9], int select)
     /* 遍历列标元素，选一个元素最少的列（回溯率低） */
     int col = 0;
     int min = INT_MAX;
-    for (int i = Right[0]; i != 0; i = Right[i]) 
+    for (int i = g_right[0]; i != 0; i = g_right[i]) 
     {
-        int size = Size[i];
+        int size = g_size[i];
         if (size == 0)
             return false;
         if (size < min) {
@@ -358,16 +358,16 @@ bool Core::findOneSolution(int final[9][9], int select)
     }
     remove(col);
     /* 遍历该列各“1”元素,逐行依次尝试,失败则恢复已移除的结点 */
-    for (int i = Down[col]; i != col; i = Down[i]) 
+    for (int i = g_down[col]; i != col; i = g_down[i]) 
     {
-        int row = Row[i];
+        int row = g_row[i];
         final[row / 81][row % 81 / 9] = row % 9 + 1;    // 根据该元素的行填入数独
-        for (int j = Right[i]; j != i; j = Right[j])    // 移除与该元素同行元素的列 
-            remove(Col[j]);
+        for (int j = g_right[i]; j != i; j = g_right[j])    // 移除与该元素同行元素的列 
+            remove(g_col[j]);
         if (findOneSolution(final, select + 1))    // 已选行数+1，递归
             return true;
-        for (int j = Left[i]; j != i; j = Left[j])    // 返回false则恢复刚才的移除，顺序相反
-            restore(Col[j]);
+        for (int j = g_left[i]; j != i; j = g_left[j])    // 返回false则恢复刚才的移除，顺序相反
+            restore(g_col[j]);
     }
     restore(col);
     return false;
@@ -385,9 +385,9 @@ bool Core::findSolutions(int final[9][9], int select, int& solution)
     /* 遍历列标元素，选一个元素最少的列（回溯率低） */
     int col = 0;
     int min = INT_MAX;
-    for (int i = Right[0]; i != 0; i = Right[i])
+    for (int i = g_right[0]; i != 0; i = g_right[i])
     {
-        int size = Size[i];
+        int size = g_size[i];
         if (size == 0)
             return false;
         if (size < min) {
@@ -397,16 +397,16 @@ bool Core::findSolutions(int final[9][9], int select, int& solution)
     }
     remove(col);
     /* 遍历该列各“1”元素,逐行依次尝试,失败则恢复已移除的结点 */
-    for (int i = Down[col]; i != col; i = Down[i])
+    for (int i = g_down[col]; i != col; i = g_down[i])
     {
-        int row = Row[i];
+        int row = g_row[i];
         final[row / 81][row % 81 / 9] = row % 9 + 1;    // 根据该元素的行填入数独
-        for (int j = Right[i]; j != i; j = Right[j])    // 移除与该元素同行元素的列 
-            remove(Col[j]);
+        for (int j = g_right[i]; j != i; j = g_right[j])    // 移除与该元素同行元素的列 
+            remove(g_col[j]);
         if (findSolutions(final, select + 1, solution))    // 已选行数+1，递归
             return true;
-        for (int j = Left[i]; j != i; j = Left[j])    // 返回false则恢复刚才的移除，顺序相反
-            restore(Col[j]);
+        for (int j = g_left[i]; j != i; j = g_left[j])    // 返回false则恢复刚才的移除，顺序相反
+            restore(g_col[j]);
     }
     restore(col);
     return false;
