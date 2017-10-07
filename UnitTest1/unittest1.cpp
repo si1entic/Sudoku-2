@@ -107,7 +107,46 @@ namespace UnitTest1
             delete[] result;
         }
 
-	};
+        TEST_METHOD(TestSolve)
+        {
+            // TODO: 在此输入测试代码
+            Core c;
+            int puzzle[1][81];
+            int final[9][9];
+            int blanks = 0;
 
-  
+            c.generate(1, 1, puzzle);
+            Assert::IsTrue(c.solve(puzzle[0], puzzle[0]), L"求解失败");
+            memcpy(final, puzzle, sizeof(final));
+            for (int j = 0; j < 81; j++)
+                Assert::IsTrue(checkValid(final, j / 9, j % 9, blanks), L"合法性出错");
+
+            c.generate(1, 2, puzzle);
+            Assert::IsTrue(c.solve(puzzle[0], puzzle[0]), L"求解失败");
+            memcpy(final, puzzle, sizeof(final));
+            for (int j = 0; j < 81; j++)
+                Assert::IsTrue(checkValid(final, j / 9, j % 9, blanks), L"合法性出错");
+
+            c.generate(1, 3, puzzle);
+            Assert::IsTrue(c.solve(puzzle[0], puzzle[0]), L"求解失败");
+            memcpy(final, puzzle, sizeof(final));
+            for (int j = 0; j < 81; j++)
+                Assert::IsTrue(checkValid(final, j / 9, j % 9, blanks), L"合法性出错");
+
+            c.generate(1, 20, 55, false, puzzle);
+            Assert::IsTrue(c.solve(puzzle[0], puzzle[0]), L"求解失败");
+            memcpy(final, puzzle, sizeof(final));
+            for (int j = 0; j < 81; j++)
+                Assert::IsTrue(checkValid(final, j / 9, j % 9, blanks), L"合法性出错");
+
+            c.generate(1, 50, 55, true, puzzle);
+            Assert::IsTrue(c.solve(puzzle[0], puzzle[0]), L"求解失败");
+            memcpy(final, puzzle, sizeof(final));
+            for (int j = 0; j < 81; j++)
+                Assert::IsTrue(checkValid(final, j / 9, j % 9, blanks), L"合法性出错");
+
+            puzzle[0][0] = puzzle[0][1] = 1;
+            Assert::IsFalse(c.solve(puzzle[0], puzzle[0]), L"解出非法数独");
+        }
+	};
 }
