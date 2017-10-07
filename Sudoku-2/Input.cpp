@@ -197,10 +197,9 @@ void Input::handle(const int argc, char *argv[], int result[][81])
         else
             handleError("参数格式有误！");
     default:
+        handleError("参数格式有误！");
         break;
     }
-
-   
 }
 
 int Input::getNumber(const string & s){
