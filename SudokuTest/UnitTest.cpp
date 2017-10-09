@@ -193,7 +193,7 @@ namespace SudokuTest
             int result[1][81];
             try
             {
-                c.generate(-1, 1, result);
+                c.generate(-1, 1, result);  // number传入-1
                 Assert::Fail(L"number范围出错");
             }
             catch (NumberException& e)
@@ -202,7 +202,7 @@ namespace SudokuTest
             }
             try
             {
-                c.generate(INT_MAX, 30, 40, true, result);
+                c.generate(INT_MAX, 30, 40, true, result); // number传入最大int值
                 Assert::Fail(L"number范围出错");
             }
             catch (NumberException& e)
@@ -218,7 +218,7 @@ namespace SudokuTest
             int result[1][81];
             try
             {
-                c.generate(1, 0, result);
+                c.generate(1, 0, result); // mode传入0
                 Assert::Fail(L"mode范围出错");
             }
             catch (ModeException& e)
@@ -227,7 +227,7 @@ namespace SudokuTest
             }
             try
             {
-                c.generate(1, 4, result);
+                c.generate(1, 4, result); // mode传入4
                 Assert::Fail(L"mode范围出错");
             }
             catch (ModeException& e)
@@ -243,7 +243,7 @@ namespace SudokuTest
             int result[1][81];
             try
             {
-                c.generate(1, -1, 20, false, result);
+                c.generate(1, -1, 20, false, result); // lower传入-1
                 Assert::Fail(L"range范围出错");
             }
             catch (RangeException& e)
@@ -252,7 +252,7 @@ namespace SudokuTest
             }
             try
             {
-                c.generate(1, 50, 40, false, result);
+                c.generate(1, 50, 40, false, result); // 传入的lower比upper大
                 Assert::Fail(L"range范围出错");
             }
             catch (RangeException& e)
@@ -261,7 +261,7 @@ namespace SudokuTest
             }
             try
             {
-                c.generate(1, 20, 56, false, result);
+                c.generate(1, 20, 56, false, result); // upper传入56
                 Assert::Fail(L"range范围出错");
             }
             catch (RangeException& e)
@@ -279,7 +279,7 @@ namespace SudokuTest
             result[0][0] = result[0][1] = 1;
             try
             {
-                c.solve(result[0], result[0]);
+                c.solve(result[0], result[0]); // 传入非法数独
                 Assert::Fail(L"解出非法数独");
             }
             catch (ValidException& e)
