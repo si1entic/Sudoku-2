@@ -1,6 +1,7 @@
 #pragma once
 
-#include "stdafx.h"
+#include "Exception.h"
+#include <iostream>
 
 using namespace std;
 

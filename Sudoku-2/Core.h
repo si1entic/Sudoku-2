@@ -1,6 +1,8 @@
 #pragma once
 
-#include "stdafx.h"
+#include "Exception.h"
+#include <iostream>
+#include <time.h>
 
 using namespace std;
 
@@ -17,6 +19,7 @@ public:
 class PuzzleSovlver
 {
 public:
+    bool checkValid(int final[9][9]);
     void init();
     void link(int final[9][9]);
     void insertNode(int col, int no);

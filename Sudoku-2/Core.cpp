@@ -14,6 +14,11 @@ int g_no;				// 元素编号
 /* 生成number个难度为mode的题目，放入result中 */
 void Core::generate(int number, int mode, int result[][81])
 {
+    srand((unsigned)time(NULL));
+    if (number < 1 || number > 10000)
+        throw NumberException();
+    if(mode<1||mode>3)
+        throw ModeException();
     for (int i = 0; i < number; i++)
     {
         int final[9][9];
@@ -27,12 +32,9 @@ void Core::generate(int number, int mode, int result[][81])
         case 2:
             blanks = (rand() % (45 - 31 + 1)) + 31;
             break;
-        case 3:
+        default:
             blanks = (rand() % (55 - 46 + 1)) + 46;
             break;
-        default:
-            cout << "mode is wrong" << endl;
-            exit(1);
         }
         hollowRandom(final, blanks);
         memcpy(result[i], final, sizeof(final));
@@ -41,6 +43,11 @@ void Core::generate(int number, int mode, int result[][81])
 
 void Core::generate(int number, int lower, int upper, bool unique, int result[][81])
 {
+    srand((unsigned)time(NULL));
+    if (number < 1 || number > 1000000)
+        throw NumberException();
+    if (lower > upper || upper > 55 || lower < 0)
+       throw RangeException();
     for (int i = 0; i < number; i++)
     {
         int final[9][9];
@@ -56,8 +63,11 @@ void Core::generate(int number, int lower, int upper, bool unique, int result[][
 
 bool Core::solve(int puzzle[81], int solution[81])
 {
+    srand((unsigned)time(NULL));
     int final[9][9];
     memcpy(final, puzzle, sizeof(final));
+    if (!ps.checkValid(final))
+        throw ValidException();
     ps.init();
     ps.link(final);
     int select = 0;
@@ -76,12 +86,9 @@ bool Core::solve(int puzzle[81], int solution[81])
             }
         }
     }
-    if (ps.findOneSolution(final, select + 1))
-    {
-        memcpy(solution, final, sizeof(final));
-        return true;
-    }
-    return false;
+    ps.findOneSolution(final, select + 1);
+    memcpy(solution, final, sizeof(final));
+    return true;
 }
 
 void Core::hollowUnique(int final[9][9], int blanks)
@@ -217,8 +224,34 @@ bool PuzzleSovlver::checkUnique(int final[9][9])
         }
     }
     int solution = 0;
-    if(findSolutions(final, select + 1, solution))
+    try
+    {
+        findSolutions(final, select + 1, solution);
+        return true;
+    }
+    catch (int)
+    {
         return false;
+    }
+}
+
+bool PuzzleSovlver::checkValid(int final[9][9])
+{
+    for (int row = 0; row < 9; row++)
+        for (int col = 0; col < 9; col++)
+        {
+            int value = final[row][col];
+            if (value == 0)
+                continue;
+            for (int i = row / 3 * 3; i < row / 3 * 3 + 3; i++) // 检测该块是否已有该数字
+                for (int j = col / 3 * 3; j < col / 3 * 3 + 3; j++)
+                    if (final[i][j] == value)
+                        if (!(i == row&&j == col))
+                            return false;
+            for (int i = 0; i < 9; i++)                         // 检测该行该列是否已有该数字
+                if ((i != col&&final[row][i] == value) || (final[i][col] == value&&i != row))
+                    return false;
+        }
     return true;
 }
 
@@ -379,11 +412,10 @@ bool PuzzleSovlver::findSolutions(int final[9][9], int select, int& solution)
 {
     if (select > 81)    
     {
-        if (++solution > 1) // 已求出的解个数
-            return true;
-        return false;
+        if (++solution == 1) // 已求出的解个数
+            return false; 
+        throw(1);
     }
-       
     /* 遍历列标元素，选一个元素最少的列（回溯率低） */
     int col = 0;
     int min = INT_MAX;

@@ -17,10 +17,10 @@ void Output::output(int number, int result[][81])
         str[index++] = '\n';
     }
     FILE* fp = fopen("sudoku.txt", "wt");
-    if (fp == NULL)  
+    if (fp == NULL)
     {
         cout << "无法打开sudoku.txt文件" << endl;
-        exit(1);  
+        exit(1);
     }
     fwrite(str, 1, index, fp);
     fclose(fp);
