@@ -86,7 +86,8 @@ bool Core::solve(int puzzle[81], int solution[81])
             }
         }
     }
-    ps.findOneSolution(final, select + 1);
+    if (!ps.findOneSolution(final, select + 1))     // Êý¶ÀÎÞ½â
+        return false;
     memcpy(solution, final, sizeof(final));
     return true;
 }
