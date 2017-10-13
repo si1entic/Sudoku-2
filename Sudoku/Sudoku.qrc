@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/Sudoku">
+        <file>Resources/logo.jpg</file>
+    </qresource>
+</RCC>
