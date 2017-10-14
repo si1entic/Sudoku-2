@@ -1,13 +1,7 @@
-#include "Sudoku.h"
-#include <QtWidgets/QApplication>
 #include "Input.h"
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
-    Sudoku window;
-    window.show();
-
     int(*result)[81] = new int[1000000][81];
     Input inputHandler;
     try
@@ -20,6 +14,5 @@ int main(int argc, char *argv[])
         exit(1);
     }
     delete[] result;
-
-    return a.exec();
+    return 0;
 }

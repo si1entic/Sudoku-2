@@ -1,11 +1,15 @@
 #include "Input.h"
 
-void Input::handle(const int argc, char *argv[], int result[][81])
+void Input::handle(int argc, char *argv[], int result[][81])
 {
     Core core;
+    QApplication a(argc, argv);
+    Sudoku window;
     switch (argc)
     {
     case 1:
+        window.show();
+        a.exec();
         break;
     case 3:
         if (strcmp(argv[1], "-c") == 0)
@@ -198,10 +202,10 @@ void Input::handle(const int argc, char *argv[], int result[][81])
             Output::output(number, result);
         }
         else
-            error("参数格式有误！"); 
+            error("参数格式有误！仅支持 -c、-s、-n -u、-n -m、-n -r、-n -r -u六种组合"); 
         break;
     default:
-        error("参数格式有误！");
+        error("参数格式有误！仅支持 -c、-s、-n -u、-n -m、-n -r、-n -r -u六种组合");
         break;
     }
 }
