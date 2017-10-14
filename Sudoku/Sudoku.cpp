@@ -139,7 +139,7 @@ Sudoku::Sudoku(QWidget *parent)
 
     btn_resetHistory = new QPushButton(recordLayout);
     connect(btn_resetHistory, SIGNAL(clicked()), this, SLOT(resetHistory()));
-    btn_resetHistory->setText(tr("Reset History"));
+    btn_resetHistory->setText(tr("Reset"));
     btn_resetHistory->setMaximumWidth(100);
 
     recordLayoutIn = new QGridLayout(recordLayout);
