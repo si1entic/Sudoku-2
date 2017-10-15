@@ -59,7 +59,8 @@ Sudoku::Sudoku(QWidget *parent)
 
     midLayout->setVerticalSpacing(0);
     midLayout->setHorizontalSpacing(0);
-    for (int i = 0; i < 81; i++) {
+    for (int i = 0; i < 81; i++) 
+	{
         sudo[i] = new MineLineEdit(this);
         sudo[i]->createActions();
         sudo[i]->setMaxLength(1);
@@ -186,14 +187,16 @@ void Sudoku::easyOpen()
     }
 }
 
-void Sudoku::normalOpen() {
+void Sudoku::normalOpen() 
+{
     stopmTimer();
     timeTimer = 0;
     lb_timer->setText("0");
     model = 2;
     lb_model->setText("Normal");
     btn_start->setText("start");
-    for (int i = 0; i < 81; i++) {
+    for (int i = 0; i < 81; i++) 
+	{
         sudo[i]->setText("");
         sudo[i]->setReadOnly(true);
         sudo[i]->setStyleSheet(
@@ -203,14 +206,16 @@ void Sudoku::normalOpen() {
     }
 }
 
-void Sudoku::hardOpen() {
+void Sudoku::hardOpen() 
+{
     stopmTimer();
     timeTimer = 0;
     lb_timer->setText("0");
     model = 3;
     lb_model->setText("Hard");
     btn_start->setText("start");
-    for (int i = 0; i < 81; i++) {
+    for (int i = 0; i < 81; i++) 
+	{
         sudo[i]->setText("");
         sudo[i]->setReadOnly(true);
         sudo[i]->setStyleSheet(
@@ -220,7 +225,8 @@ void Sudoku::hardOpen() {
     }
 }
 
-void Sudoku::record() {
+void Sudoku::record() 
+{
     QString *qstr1 = new QString();
     QString *qstr2 = new QString();
     QString *qstr3 = new QString();
@@ -234,17 +240,18 @@ void Sudoku::record() {
     recordLayout->show();
 }
 
-void Sudoku::startGame() {
+void Sudoku::startGame() 
+{
     btn_start->setText("restart");
     lb_timer->setText("0");
     sudoku.generate(1, model, result);
     startmTimer();
-    for (int i = 0; i < 9; i++) {
-        for (int j = 0; j < 9; j++) {
+    for (int i = 0; i < 9; i++) 
+        for (int j = 0; j < 9; j++) 
             sudoTable[i][j] = result[0][i * 9 + j];
-        }
-    }
-    for (int i = 0; i < 81; i++) {
+
+    for (int i = 0; i < 81; i++) 
+	{
         if (result[0][i] != 0)
         {
             sudo[i]->setText(QString::number(result[0][i]));
@@ -266,7 +273,8 @@ void Sudoku::startGame() {
     }
 }
 
-void Sudoku::tipClick() {
+void Sudoku::tipClick() 
+{
     MineLineEdit *mle = qobject_cast<MineLineEdit*>(sender());
     int i = mle->accessibleName().toInt();
     int solution[81];
@@ -285,9 +293,8 @@ void Sudoku::tipClick() {
         sudoTable[i / 9][i % 9] = solution[i];
         mle->setStyleSheet("color: blue;");
     }
-    else {
+    else 
         QMessageBox::information(this, tr("tip"), tr("Already Wrong"));
-    }
 }
 
 bool checkValid(int final[9][9], int row, int col, int value)
